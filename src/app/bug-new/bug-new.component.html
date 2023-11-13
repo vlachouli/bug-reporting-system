@@ -6,7 +6,7 @@
     </div>
     <div>
         <label for="description">Description {{ isMandatory("description") ? ('*') : ''  }}</label>
-        <input formControlName="description" type="text" placeholder="Enter your description" class="form-control" id="description">
+        <textarea  formControlName="description" type="text" placeholder="Enter your description" class="form-control" id="description"></textarea>
         <div class="alert alert-danger" *ngIf="description?.hasError('required') && description?.touched">Description is required</div>
     </div>
     <div>
