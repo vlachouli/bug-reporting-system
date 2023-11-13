@@ -1,0 +1,38 @@
+<form (ngSubmit)="addBug()" [formGroup]="bugForm" class="form">
+    <div>
+      <label for="title">Title {{ isMandatory("title") ? ('*') : ''  }}</label>
+      <input formControlName="title" type="text" placeholder="Enter your title" class="form-control" id="title">
+      <div class="alert alert-danger" *ngIf="title?.hasError('required') && title?.touched">Title is required</div>
+    </div>
+    <div>
+        <label for="description">Description {{ isMandatory("description") ? ('*') : ''  }}</label>
+        <input formControlName="description" type="text" placeholder="Enter your description" class="form-control" id="description">
+        <div class="alert alert-danger" *ngIf="description?.hasError('required') && description?.touched">Description is required</div>
+    </div>
+    <div>
+        <label for="priority">Priority {{ isMandatory("priority") ? ('*') : ''  }}</label>
+        <select formControlName="priority">
+            <option value="">- Select priority-</option>
+            <option *ngFor="let option of priorityOptions" value="{{ option.value }}">{{ option.name }}</option>
+        </select>
+        <div class="alert alert-danger" *ngIf="priority?.hasError('required') && priority?.touched">Priority is required</div>
+    </div>
+    <div>
+        <label for="reporter">Reporter {{ isMandatory("reporter") ? ('*') : ''  }}</label>
+        <select formControlName="reporter">
+            <option value="">- Select reporter-</option>
+            <option *ngFor="let option of reporterOptions" value="{{ option }}">{{ option }}</option>
+        </select>
+        <div class="alert alert-danger" *ngIf="reporter?.hasError('required') && reporter?.touched">Reporter is required</div>
+    </div>
+    <div>
+        <label for="status">Status {{ isMandatory("status") ? ('*') : ''  }}</label>
+        <select formControlName="status">
+            <option value="">- Select status-</option>
+            <option *ngFor="let option of statusOptions" value="{{ option }}">{{ option }}</option>
+        </select>
+        <div class="alert alert-danger" *ngIf="status?.hasError('required') && status?.touched">Status is required</div>
+    </div>
+    
+    <button [disabled]="bugForm.invalid" class="btn btn-primary">Submit</button>
+  </form>
