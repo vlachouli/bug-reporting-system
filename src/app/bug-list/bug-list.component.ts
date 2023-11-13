@@ -10,27 +10,22 @@ import {Router} from "@angular/router";
   templateUrl: './bug-list.component.html',
   styleUrls: ['./bug-list.component.scss']
 })
-export class BugListComponent implements OnInit,OnDestroy, AfterViewInit {
+export class BugListComponent implements OnInit,OnDestroy {
 
   bugList : MatTableDataSource<Bug> = new MatTableDataSource<Bug>([]);
-  displayedColumns: string[] = ['title', 'priority', 'reporter', 'created', 'status'];
+  displayedColumns: string[] = ['title', 'priority', 'reporter', 'created', 'status', 'actions'];
+  lastSortedColumn: string = "";
+  lastSorting: string = "";
   
-  @ViewChild(MatSort, { static: true }) sort!: MatSort;
-
   constructor(private bugService: BugService, private router: Router) {
 
     bugService.getAll(new Map<string, string>).subscribe({
       next: (data) => {
         this.bugList = new MatTableDataSource<Bug>(data);
-        this.bugList.sort = this.sort;
         console.log(this.bugList);
       }
     })
 
-  }
-
-  ngAfterViewInit() {
-    this.bugList.sort = this.sort;
   }
 
   ngOnDestroy(): void {
@@ -52,6 +47,8 @@ export class BugListComponent implements OnInit,OnDestroy, AfterViewInit {
         return 'Date Created';
       case 'status':
         return 'Status';        
+      case 'actions':
+        return 'Actions';
       default:
         return field;
     }
@@ -60,5 +57,40 @@ export class BugListComponent implements OnInit,OnDestroy, AfterViewInit {
   navigateToNew() {
     this.router.navigate(['bug', 'new']);
   }
+
+  sort(column:string) {
+    let queryMap = new Map<string, string>;
+
+    if (this.lastSortedColumn == column) {
+      this.lastSortedColumn = column;
+      if (this.lastSorting == "asc") {
+        this.lastSorting = "desc";
+        queryMap.set("_sort", this.lastSortedColumn);
+        queryMap.set("_order", this.lastSorting);  
+      } else if (this.lastSorting == "desc") {
+        this.lastSorting = "";
+        this.lastSortedColumn = "";
+      } else {
+        this.lastSorting = "asc";
+        queryMap.set("_sort", this.lastSortedColumn);
+        queryMap.set("_order", this.lastSorting);
+      }
+    } else {
+      this.lastSorting = "asc";
+      this.lastSortedColumn = column;
+      queryMap.set("_sort", this.lastSortedColumn);
+      queryMap.set("_order", this.lastSorting);
+    }
+    
+    console.log(queryMap);
+    this.bugService.getAll(queryMap).subscribe({
+      next: (data) => {
+        this.bugList = new MatTableDataSource<Bug>(data);
+        console.log(this.bugList);
+      }
+    })
+
+  }
+
 
 }

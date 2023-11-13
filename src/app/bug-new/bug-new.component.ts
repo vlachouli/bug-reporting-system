@@ -1,7 +1,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { PRIORITY, REPORTER, STATUS } from '../app.constants';
-import {Router} from "@angular/router";
+import {ActivatedRoute, Router} from "@angular/router";
 import { BugService } from '../bug.service';
 import { Subscription } from 'rxjs';
 
@@ -19,6 +19,10 @@ export class BugNewComponent implements OnInit, OnDestroy{
 
   bugForm!: FormGroup;
 
+  viewMode: boolean = false;
+
+  id: string | undefined;
+
   priorityOptions : Option[] = [
       {value: 0, name: PRIORITY.MINOR },
       {value: 1, name: PRIORITY.MAJOR },
@@ -32,7 +36,7 @@ export class BugNewComponent implements OnInit, OnDestroy{
   subscription : Subscription = new Subscription;
 
   constructor(private formBuilder: FormBuilder, private router: Router,
-              private bugService: BugService) { 
+              private bugService: BugService, private route: ActivatedRoute) { 
 
   }
 
@@ -59,6 +63,18 @@ export class BugNewComponent implements OnInit, OnDestroy{
         this.bugForm.controls['status'].updateValueAndValidity();
     }
   });
+
+    this.id = this.route.snapshot.params['id'];
+
+    if (this.id) {
+      this.viewMode = true;
+      this.bugService.get(this.id).subscribe({
+        next: (data) => {
+          console.log(data);
+          this.bugForm.patchValue(data);
+        }
+      })
+    }
 
   }
 

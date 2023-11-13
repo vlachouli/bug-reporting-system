@@ -24,6 +24,7 @@ export class BugService {
       }
       suffix += key + "=" + value;
     });
+    console.log(suffix);
     return this.http.get<Bug[]>(`${this.service}/${suffix}`);
   }
 

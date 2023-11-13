@@ -10,6 +10,8 @@ const routes: Routes = [
   {path: "bug", component: BugListComponent},
 
   {path: "bug/new", component: BugNewComponent},
+
+  {path: "bug/:id", component: BugNewComponent},
 ];
 
 @NgModule({

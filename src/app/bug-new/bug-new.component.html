@@ -34,5 +34,5 @@
         <div class="alert alert-danger" *ngIf="status?.hasError('required') && status?.touched">Status is required</div>
     </div>
     
-    <button [disabled]="bugForm.invalid" class="btn btn-primary">Submit</button>
+    <button [disabled]="bugForm.invalid" class="btn btn-primary" *ngIf="!viewMode">Submit</button>
   </form>
